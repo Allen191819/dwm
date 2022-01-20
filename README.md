@@ -26,6 +26,19 @@ Windows are grouped by tags. Each window can be tagged with one or multiple tags
 
 Each screen contains a small status bar which displays all available tags, the layout, the number of visible windows, the title of the focused window, and the text read from the root window name property, if the screen is focused. A floating window is indicated with an empty square and a maximised floating window is indicated with a filled square before the windows title. The selected tags are indicated with a different color. The tags of the focused window are indicated with a filled square in the top left corner. The tags which are applied to one or more windows are indicated with an empty square in the top left corner.
 
+## Overview
+
+![](img/2022-01-20-19-13-29.png)
+
+![](img/2022-01-20-19-18-03.png)
+
+![](img/2022-01-20-19-18-38.png)
+
+![](img/2022-01-20-19-19-02.png)
+
+![](img/2022-01-20-19-19-23.png)
+
+
 ## Installation 
 
 ```bash
