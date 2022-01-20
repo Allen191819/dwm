@@ -104,7 +104,7 @@ static Key keys[] = {
     { MODKEY,              XK_b,            focusmon,         {.i = +1 } },              /* super b            |  光标移动到另一个显示器 */
     { MODKEY|ShiftMask,    XK_b,            tagmon,           {.i = +1 } },              /* super shift b      |  将聚焦窗口移动到另一个显示器 */
 
-    { MODKEY|ShiftMask,    XK_q,            killclient,       {0} },                     /* super q            |  kill窗口 */
+    { MODKEY|ShiftMask,    XK_q,            killclient,       {0} },                     /* super shiift q     |  kill窗口 */
     { MODKEY|ControlMask,  XK_F12,          quit,             {0} },                     /* super ctrl f12     |  退出dwm */
 
     { MODKEY,              XK_space,        toggleallhidewins,{0} },                     /* super space        |  隐藏全部其他窗口 | 显示全部窗口 */
@@ -121,8 +121,9 @@ static Key keys[] = {
     /* spawn + SHCMD 执行对应命令 */
 	{ 0,                   XK_Print,        spawn,            SHCMD("~/scripts/app-starter.sh flameshot")},
     { MODKEY,              XK_d,            spawn,            SHCMD("~/scripts/app-starter.sh rofi") },
-    { MODKEY|ShiftMask,    XK_k,            spawn,            SHCMD("~/scripts/app-starter.sh screenkey") },
+    { MODKEY|ControlMask,  XK_k,            spawn,            SHCMD("~/scripts/app-starter.sh screenkey") },
     { MODKEY|ShiftMask,    XK_x,            spawn,            SHCMD("~/scripts/app-starter.sh lock") },
+    { MODKEY|ControlMask,  XK_t,            spawn,            SHCMD("~/scripts/app-starter.sh clock") },
     { MODKEY,              XK_p,            spawn,            SHCMD("~/scripts/app-starter.sh music") },
     { MODKEY,              XK_b,            spawn,            SHCMD("~/scripts/app-starter.sh browser") },
     { MODKEY,              XK_n,            spawn,            SHCMD("~/scripts/app-starter.sh pcmanfm") },
