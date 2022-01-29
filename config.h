@@ -27,7 +27,7 @@ static const unsigned int alphas[][3]    = { [SchemeNorm] = { OPAQUE, baralpha, 
 /* 自定义tag名称 */
 /* 自定义特定实例的显示状态 */
 //            ﮸ 
-static const char *tags[] = { "﮸", "", "", "", "", "", "", "", "", "", "", "", "ﬄ", "﬐", "" };
+static const char *tags[] = { "﮸", "", "", "", "", "", "", "", "", "", "", "", "ﬄ", "﬐", "", ""};
 // static const char *tags[] = { "﮸ ", "﮸ ₂", "﮸ ₃", "﮸ ₄", "﮸ ₅", "﮸ ₆", "﮸ ₇", "﮸ ₈", "", "", "", "", "ﬄ", "﬐", "" };
 static const Rule rules[] = {
     /* class                 instance              title             tags mask     isfloating  isfullscreen  monitor */
@@ -81,10 +81,12 @@ static Key keys[] = {
     { MODKEY|ShiftMask,    XK_Left,         tagtoleft,        {0} },                     /* super shift left   |  将本窗口移动到左边tag */
     { MODKEY|ShiftMask,    XK_Right,        tagtoright,       {0} },                     /* super shift right  |  将本窗口移动到右边tag */
 
-    { MODKEY,              XK_j,            viewtoleft,       {0} },                     /* super left         |  聚焦到左边的tag */
-    { MODKEY,              XK_k,            viewtoright,      {0} },                     /* super right        |  聚焦到右边的tag */
-    { MODKEY|ShiftMask,    XK_j,            tagtoleft,        {0} },                     /* super shift left   |  将本窗口移动到左边tag */
-    { MODKEY|ShiftMask,    XK_k,            tagtoright,       {0} },                     /* super shift right  |  将本窗口移动到右边tag */
+    { MODKEY|ControlMask,  XK_j,            viewtoleft,       {0} },                     /* super contrl j     |  聚焦到左边的tag */
+    { MODKEY|ControlMask,  XK_k,            viewtoright,      {0} },                     /* super contrl k     |  聚焦到右边的tag */
+    { MODKEY|ShiftMask,    XK_j,            tagtoleft,        {0} },                     /* super shift j      |  将本窗口移动到左边tag */
+    { MODKEY|ShiftMask,    XK_k,            tagtoright,       {0} },                     /* super shift k      |  将本窗口移动到右边tag */
+    { MODKEY,              XK_j,            focusstack,       {.i = -1} },               /* super j            |  本tag内切换聚焦窗口 */
+    { MODKEY,              XK_k,            focusstack,       {0} },                     /* super k            |  本tag内切换聚焦窗口 */
 
     { MODKEY,              XK_comma,        setmfact,         {.f = -0.05} },            /* super ,            |  缩小主工作区 */
     { MODKEY,              XK_period,       setmfact,         {.f = +0.05} },            /* super .            |  放大主工作区 */
@@ -101,8 +103,8 @@ static Key keys[] = {
     { MODKEY|ShiftMask,    XK_f,            togglebar,        {0} },                     /* super shift f      |  开启/关闭 状态栏 */
     { MODKEY,              XK_e,            incnmaster,       {.i = +1 } },              /* super e            |  改变主工作区窗口数量 (1 2中切换) */
 
-    { MODKEY,              XK_b,            focusmon,         {.i = +1 } },              /* super b            |  光标移动到另一个显示器 */
-    { MODKEY|ShiftMask,    XK_b,            tagmon,           {.i = +1 } },              /* super shift b      |  将聚焦窗口移动到另一个显示器 */
+    { MODKEY,              XK_s,            focusmon,         {.i = +1 } },              /* super s            |  光标移动到另一个显示器 */
+    { MODKEY|ShiftMask,    XK_s,            tagmon,           {.i = +1 } },              /* super shift s      |  将聚焦窗口移动到另一个显示器 */
 
     { MODKEY|ShiftMask,    XK_q,            killclient,       {0} },                     /* super shiift q     |  kill窗口 */
     { MODKEY|ControlMask,  XK_F12,          quit,             {0} },                     /* super ctrl f12     |  退出dwm */
@@ -146,11 +148,12 @@ static Key keys[] = {
     TAGKEYS(XK_8, 7,  0,  0)
     TAGKEYS(XK_9, 8,  "~/scripts/app-starter.sh pavucontrol", 0)
     TAGKEYS(XK_c, 9,  "~/scripts/app-starter.sh browser", 0)
-    TAGKEYS(XK_p, 10,  "~/scripts/app-starter.sh music",  0)
+    TAGKEYS(XK_p, 10, "~/scripts/app-starter.sh music",  0)
     TAGKEYS(XK_m, 11, "~/scripts/app-starter.sh pcmanfm", 0)
     TAGKEYS(XK_u, 12, "~/scripts/app-starter.sh tim",     0)
     TAGKEYS(XK_w, 13, "~/scripts/app-starter.sh wechat",  0)
     TAGKEYS(XK_z, 14, "~/scripts/app-starter.sh qq",      0)
+    TAGKEYS(XK_o, 15, "~/scripts/app-starter.sh virt",    0)
 };
 static Button buttons[] = {
     /* click               event mask       button            function        argument  */
