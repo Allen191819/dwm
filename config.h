@@ -27,7 +27,7 @@ static const unsigned int alphas[][3]    = { [SchemeNorm] = { OPAQUE, baralpha, 
 /* 自定义tag名称 */
 /* 自定义特定实例的显示状态 */
 //            ﮸ 
-static const char *tags[] = { "﮸", "", "", "", "", "", "", "", "", "", "", "", "ﬄ", "﬐", "", ""};
+static const char *tags[] = { "﮸", "", "", "", "", "", "", "", "", "", "", "", "ﬄ", "﬐", "", "",""};
 // static const char *tags[] = { "﮸ ", "﮸ ₂", "﮸ ₃", "﮸ ₄", "﮸ ₅", "﮸ ₆", "﮸ ₇", "﮸ ₈", "", "", "", "", "ﬄ", "﬐", "" };
 static const Rule rules[] = {
     /* class                 instance              title             tags mask     isfloating  isfullscreen  monitor */
@@ -96,6 +96,9 @@ static Key keys[] = {
     { MODKEY,              XK_h,            hidewin,          {0} },                     /* super h            |  隐藏 窗口 */
     { MODKEY|ShiftMask,    XK_h,            restorewin,       {0} },                     /* super shift h      |  取消隐藏 窗口 */
 
+	{ MODKEY,              XK_0,            view,             {.ui = ~0 } },
+	{ MODKEY|ShiftMask,    XK_0,            tag,              {.ui = ~0 } },
+
     { MODKEY|ShiftMask,    XK_Return,       zoom,             {0} },                     /* super shift enter  |  将当前聚焦窗口置为主窗口 */
     { MODKEY,              XK_t,            togglefloating,   {0} },                     /* super t            |  开启/关闭 聚焦目标的float模式 */
     { MODKEY|ShiftMask,    XK_t,            toggleallfloating,{0} },                     /* super shift t      |  开启/关闭 全部目标的float模式 */
@@ -132,6 +135,7 @@ static Key keys[] = {
     { MODKEY,              XK_Return,       spawn,            SHCMD("~/scripts/app-starter.sh term") },
     { MODKEY|ControlMask,  XK_Return,       spawn,            SHCMD("~/scripts/app-starter.sh ast") },
     { MODKEY|ShiftMask,    XK_y,            spawn,            SHCMD("~/scripts/app-starter.sh clipboard") },
+    { MODKEY|ControlMask,  XK_y,            spawn,            SHCMD("~/scripts/app-starter.sh notebook") },
 
     /* super key : 跳转到对应tag */
     /* super shift key : 将聚焦窗口移动到对应tag */
@@ -154,6 +158,7 @@ static Key keys[] = {
     TAGKEYS(XK_w, 13, "~/scripts/app-starter.sh wechat",  0)
     TAGKEYS(XK_z, 14, "~/scripts/app-starter.sh qq",      0)
     TAGKEYS(XK_o, 15, "~/scripts/app-starter.sh virt",    0)
+    TAGKEYS(XK_v, 16, "~/scripts/app-starter.sh db",    0)
 };
 static Button buttons[] = {
     /* click               event mask       button            function        argument  */
