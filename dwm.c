@@ -180,8 +180,6 @@ struct Systray {
 /* function declarations */
 static void logtofile(const char *str, int num, int num2);
 
-static void tile(Monitor *m);
-static void grid(Monitor *m);
 
 static void applyrules(Client *c);
 static int applysizehints(Client *c, int *x, int *y, int *w, int *h, int interact);
@@ -308,7 +306,6 @@ static void updatetitle(Client *c);
 static void updatewindowtype(Client *c);
 static void updatewmhints(Client *c);
 
-static void setgap(const Arg *arg);
 
 static void view(const Arg *arg);
 static void viewtoleft(const Arg *arg);
@@ -861,6 +858,7 @@ createmon(void)
 
     return m;
 }
+
 
 void
 destroynotify(XEvent *e)
@@ -2926,13 +2924,6 @@ updatewmhints(Client *c)
     }
 }
 
-void
-setgap(const Arg *arg)
-{
-    selmon->gappih = selmon->gappiv = arg->i ? MAX(selmon->gappiv + arg->i, 0) : gappi;
-    selmon->gappoh = selmon->gappov = arg->i ? MAX(selmon->gappov + arg->i, 0) : gappo;
-    arrange(selmon);
-}
 
 void
 view(const Arg *arg)
@@ -3034,78 +3025,6 @@ viewtoright(const Arg *arg) {
             }
         }
     }
-}
-
-void
-tile(Monitor *m)
-{
-    unsigned int i, n, h, r, mw, my, ty;
-    Client *c;
-
-    for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
-    if (n == 0)
-        return;
-
-    if (n > m->nmaster)
-        mw = m->nmaster ? (m->ww + m->gappiv) * m->mfact : 0;
-    else
-        mw = m->ww - 2 * m->gappov + m->gappiv;
-    for (i = 0, my = ty = m->gappoh, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++)
-        if (i < m->nmaster) {
-            r = MIN(n, m->nmaster) - i;
-            h = (m->wh - my - m->gappoh - m->gappih * (r - 1)) / r;
-            resize(c,
-                   m->wx + m->gappov,
-                   m->wy + my,
-                   mw - 2 * c->bw - m->gappiv,
-                   h - 2 * c->bw,
-                   0);
-            my += HEIGHT(c) + m->gappih;
-        } else {
-            r = n - i;
-            h = (m->wh - ty - m->gappoh - m->gappih * (r - 1)) / r;
-            resize(c,
-                   m->wx + mw + m->gappov,
-                   m->wy + ty,
-                   m->ww - mw - 2 * c->bw - 2 * m->gappov,
-                   h - 2* c->bw,
-                   0);
-            ty += HEIGHT(c) + m->gappih;
-        }
-}
-
-void
-grid(Monitor *m) {
-	unsigned int i, n;
-    unsigned int cx, cy, cw, ch;
-    unsigned int cols, rows;
-	Client *c;
-
-	for(n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++) ;
-    if (n == 0) return;
-    if (n == 2) rows = 1, cols = 2;
-    else {
-        for (rows = 0; rows <= n / 2; rows++)
-            if (rows * rows >= n)
-                break;
-        cols = (rows && (rows - 1) * rows >= n) ? rows - 1 : rows;
-    }
-
-	ch = (m->wh - 2 * m->gappoh - (rows - 1) * m->gappih) / rows;
-	cw = (m->ww - 2 * m->gappov - (cols - 1) * m->gappiv) / cols;
-
-	for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next)) {
-		cx = m->wx + (i % cols) * (cw + m->gappih);
-		cy = m->wy + (i / cols) * (ch + m->gappiv);
-
-        resize(c,
-               cx + m->gappoh,
-               cy + m->gappov,
-               cw - 2 * c->bw,
-               ch - 2 * c->bw,
-               0);
-		i++;
-	}
 }
 
 Client *

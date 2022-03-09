@@ -1,15 +1,14 @@
+#define FORCE_VSPLIT 1  /* nrowgrid layout: force two clients to always split vertically */
+#include "vanitygaps.c"
 #include <X11/XF86keysym.h>
 
 
-
 static int showsystray                   = 1;         /* 是否显示托盘栏 */
-static const int newismaster             = 0;         /* 定义新窗口在栈顶还是栈底 */
+static const int newismaster             = 1;         /* 定义新窗口在栈顶还是栈底 */
 static const unsigned int borderpx       = 1;         /* 窗口边框大小 */
 static const unsigned int systraypinning = 1;         /* 托盘跟随的显示器 0代表不指定显示器 */
 static const int systraypinningfailfirst = 1;         /* 托盘跟随的显示器 0代表上个聚焦的显示器 1代表当前聚焦的显示器 */
 static const unsigned int systrayspacing = 1;         /* 托盘间距 */
-static const unsigned int gappi          = 12;        /* 窗口与窗口 缝隙大小 */
-static const unsigned int gappo          = 12;        /* 窗口与边缘 缝隙大小 */
 static const int showbar                 = 1;         /* 是否显示状态栏 */
 static const int topbar                  = 1;         /* 指定状态栏位置 0底部 1顶部 */
 static const float mfact                 = 0.6;       /* 主工作区 大小比例 */
@@ -27,14 +26,14 @@ static const unsigned int alphas[][3]    = { [SchemeNorm] = { OPAQUE, baralpha, 
 /* 自定义tag名称 */
 /* 自定义特定实例的显示状态 */
 //            ﮸ 
-static const char *tags[] = { "﮸", "", "", "", "", "", "", "", "", "", "", "", "ﬄ", "﬐", "", "",""};
+static const char *tags[] = { "﮸", "", "", "", "", "", "", "", "", "", "", "", "ﬄ", "﬐", "", "","","","切"};
 // static const char *tags[] = { "﮸ ", "﮸ ₂", "﮸ ₃", "﮸ ₄", "﮸ ₅", "﮸ ₆", "﮸ ₇", "﮸ ₈", "", "", "", "", "ﬄ", "﬐", "" };
 static const Rule rules[] = {
     /* class                 instance              title             tags mask     isfloating  isfullscreen  monitor */
     {"netease-cloud-music",  NULL,                 NULL,             1 << 10,      1,          0,            -1 },
     {"Postman",              NULL,                 NULL,             1 << 11,      0,          0,            -1 },
     { NULL,                 "tim.exe",             NULL,             1 << 12,      0,          0,            -1 },
-    { NULL,                 "wechat.exe",          NULL,             1 << 13,      0,          0,            -1 },
+    { "weixin",              NULL,          NULL,             1 << 13,      1,          0,            -1 },
     { NULL,                  NULL,                "broken",          0,            1,          0,            -1 },
     { NULL,                  NULL,                "图片查看",        0,            1,          0,            -1 },
     { NULL,                  NULL,                "图片预览",        0,            1,          0,            -1 },
@@ -43,15 +42,26 @@ static const Rule rules[] = {
     {"listen1",              NULL,                 NULL,             0,            1,          0,            -1 },
     {"icalingua",            NULL,                 NULL,             0,            1,          0,            -1 },
 	{"Gpick",                NULL,                 NULL,             0,            1,          0,            -1 },
-    {"Telegram",             NULL,                 NULL,             0,            1,          0,            -1 },
+    {"Telegram",             NULL,                 NULL,             1 << 18,      1,          0,            -1 },
     {"Thunderbird",          NULL,                 NULL,             0,            1,          0,            -1 },
+    {"feishu",               NULL,                 NULL,             1 << 17,      1,          0,            -1 },
     {"vncviewer",            NULL,                 NULL,             0,            1,          0,            -1 },
+    {"listen1",              NULL,                 NULL,             1 << 10,      0,          0,            -1 },
+    {"pcmanfm",              NULL,                 NULL,             1 << 11,      0,          0,            -1 },
+    {"icalingua",            NULL,                 NULL,             1 << 14,      0,          0,            -1 },
+    {"dbeaver",              NULL,                 NULL,             1 << 16,      0,          0,            -1 },
 };
 
 /* 自定义布局 */
 static const Layout layouts[] = {
     { "﬿",  tile },    /* 主次栈 */
     { "",  grid },    /* 网格   */
+ 	{ "侀",     dwindle },
+ 	{ "",      deck },
+ 	{ "響",      bstack },
+ 	{ "冀",      gaplessgrid },
+ 	{ "",      centeredfloatingmaster },
+ 	{ "",      NULL },    /* no layout function means floating behavior */
 };
 
 // Commands
@@ -96,8 +106,7 @@ static Key keys[] = {
     { MODKEY,              XK_h,            hidewin,          {0} },                     /* super h            |  隐藏 窗口 */
     { MODKEY|ShiftMask,    XK_h,            restorewin,       {0} },                     /* super shift h      |  取消隐藏 窗口 */
 
-	{ MODKEY,              XK_0,            view,             {.ui = ~0 } },
-	{ MODKEY|ShiftMask,    XK_0,            tag,              {.ui = ~0 } },
+	{ MODKEY,              XK_0,            view,             {.ui = ~0 } },             /*super 0             |  显示所有窗口*/
 
     { MODKEY|ShiftMask,    XK_Return,       zoom,             {0} },                     /* super shift enter  |  将当前聚焦窗口置为主窗口 */
     { MODKEY,              XK_t,            togglefloating,   {0} },                     /* super t            |  开启/关闭 聚焦目标的float模式 */
@@ -113,11 +122,20 @@ static Key keys[] = {
     { MODKEY|ControlMask,  XK_F12,          quit,             {0} },                     /* super ctrl f12     |  退出dwm */
 
     { MODKEY,              XK_space,        toggleallhidewins,{0} },                     /* super space        |  隐藏全部其他窗口 | 显示全部窗口 */
-	{ MODKEY|ShiftMask,    XK_space,        selectlayout,     {.i = +1} },               /* super shift space  |  在主次栈模式和网格模式中切换 */
+	{ MODKEY|ShiftMask,    XK_space,        selectlayout,     {.i = +1} },               /* super shift space  |  在网格和主次栈模式中切换 */
 
-    { MODKEY|ControlMask,  XK_Up,           setgap,           {.i = -6} },               /* super ctrl up      |  窗口增大 */
-    { MODKEY|ControlMask,  XK_Down,         setgap,           {.i = +6} },               /* super ctrl down    |  窗口减小 */
-    { MODKEY|ControlMask,  XK_space,        setgap,           {.i = 0} },                /* super ctrl space   |  窗口重置 */
+    { MODKEY|ControlMask,  XK_Up,           setgap,           {.i = -6} },               /* super ctrl up      |  窗口增大 */ 
+    { MODKEY|ControlMask,  XK_Down,         setgap,           {.i = +6} },               /* super ctrl down    |  窗口减小 */ 
+
+	{ MODKEY|ShiftMask,    XK_0,            togglegaps,     {0} },
+	{ MODKEY|ControlMask,  XK_space,        defaultgaps,    {0} },
+
+ 	{ MODKEY,                       XK_r,      setlayout,      {.v = &layouts[2]} },
+ 	{ MODKEY|ShiftMask,             XK_r,      setlayout,      {.v = &layouts[3]} },
+ 	{ MODKEY|ControlMask,           XK_r,      setlayout,      {.v = &layouts[4]} },
+ 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[5]} },
+ 	{ MODKEY|ShiftMask,             XK_m,      setlayout,      {.v = &layouts[6]} },
+ 	{ MODKEY|ControlMask,           XK_m,      setlayout,      {.v = &layouts[7]} },
 
 	{ 0,                   XF86XK_AudioLowerVolume, spawn,    {.v = downvol } },
 	{ 0,                   XF86XK_AudioMute,        spawn,    {.v = mutevol } },
@@ -131,6 +149,7 @@ static Key keys[] = {
     { MODKEY|ControlMask,  XK_t,            spawn,            SHCMD("~/scripts/app-starter.sh clock") },
     { MODKEY,              XK_p,            spawn,            SHCMD("~/scripts/app-starter.sh music") },
     { MODKEY,              XK_b,            spawn,            SHCMD("~/scripts/app-starter.sh browser") },
+    { MODKEY|ControlMask,  XK_b,            spawn,            SHCMD("~/scripts/app-starter.sh alacritty") },
     { MODKEY,              XK_n,            spawn,            SHCMD("~/scripts/app-starter.sh pcmanfm") },
     { MODKEY,              XK_Return,       spawn,            SHCMD("~/scripts/app-starter.sh term") },
     { MODKEY|ControlMask,  XK_Return,       spawn,            SHCMD("~/scripts/app-starter.sh ast") },
@@ -153,12 +172,14 @@ static Key keys[] = {
     TAGKEYS(XK_9, 8,  "~/scripts/app-starter.sh pavucontrol", 0)
     TAGKEYS(XK_c, 9,  "~/scripts/app-starter.sh browser", 0)
     TAGKEYS(XK_p, 10, "~/scripts/app-starter.sh music",  0)
-    TAGKEYS(XK_m, 11, "~/scripts/app-starter.sh pcmanfm", 0)
+    TAGKEYS(XK_n, 11, "~/scripts/app-starter.sh pcmanfm", 0)
     TAGKEYS(XK_u, 12, "~/scripts/app-starter.sh tim",     0)
     TAGKEYS(XK_w, 13, "~/scripts/app-starter.sh wechat",  0)
     TAGKEYS(XK_z, 14, "~/scripts/app-starter.sh qq",      0)
     TAGKEYS(XK_o, 15, "~/scripts/app-starter.sh virt",    0)
     TAGKEYS(XK_v, 16, "~/scripts/app-starter.sh db",    0)
+    TAGKEYS(XK_g, 17, "~/scripts/app-starter.sh feishu",    0)
+    TAGKEYS(XK_a, 18, "~/scripts/app-starter.sh telegram",    0)
 };
 static Button buttons[] = {
     /* click               event mask       button            function        argument  */
