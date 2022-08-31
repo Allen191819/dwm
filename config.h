@@ -59,14 +59,14 @@ static const Rule rules[] = {
 
 /* 自定义布局 */
 static const Layout layouts[] = {
-    {"﬿",  tile                   }, /* 主次栈 */
+    {"﬿",  tile                   },   /* 主次栈 */
     {"",  grid                   },   /* 网格   */
     {"侀", dwindle                },
     {"",  deck                   },
     {"響", bstack                 },
     {"冀", gaplessgrid            },
     {"",  centeredfloatingmaster },
-    {"",  NULL                   }, /* no layout function means floating behavior */
+    {"",  NULL                   },    /* no layout function means floating behavior */
 };
 
 // Commands
@@ -126,7 +126,6 @@ static Key keys[] = {
     {MODKEY | ControlMask, XK_F12,                  quit,              {0}},                  /* super ctrl f12     |  退出dwm */
 
     {MODKEY,               XK_space,                toggleallhidewins, {0}},                  /* super space        |  隐藏全部其他窗口 | 显示全部窗口 */
-    {MODKEY | ShiftMask,   XK_space,                selectlayout,      {.i = +1}},            /* super shift space  |  在网格和主次栈模式中切换 */
 
     {MODKEY | ControlMask, XK_Up,                   setgap,            {.i = -6}},            /* super ctrl up      |  窗口增大 */
     {MODKEY | ControlMask, XK_Down,                 setgap,            {.i = +6}},            /* super ctrl down    |  窗口减小 */
@@ -134,6 +133,8 @@ static Key keys[] = {
     {MODKEY | ShiftMask,   XK_0,                    togglegaps,        {0}},
     {MODKEY | ControlMask, XK_space,                defaultgaps,       {0}},
 
+    {MODKEY | ControlMask, XK_0,                    setlayout,         {.v = &layouts[0]}},
+    {MODKEY | ShiftMask,   XK_space,                setlayout,         {.v = &layouts[1]}},            /* super shift space  |  主次栈模式 */
     {MODKEY,               XK_r,                    setlayout,         {.v = &layouts[2]}},
     {MODKEY | ShiftMask,   XK_r,                    setlayout,         {.v = &layouts[3]}},
     {MODKEY | ControlMask, XK_r,                    setlayout,         {.v = &layouts[4]}},

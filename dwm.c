@@ -1736,47 +1736,16 @@ removesystrayicon(Client *i)
     free(i);
 }
 
-
 void
 resize(Client *c, int x, int y, int w, int h, int interact)
 {
     if (applysizehints(c, &x, &y, &w, &h, interact)) {
-        int n = 0;
-        int i = -1;
-        Client *tc;
-        for (tc = selmon->clients; tc; tc = tc->next) {
-            if (ISVISIBLE(tc) && !HIDDEN(tc))
-                n++;
-            if (tc == c)
-                i = n;
-        }
-
-        const char *class;
+        const char *class, *instance;
         XClassHint ch = { NULL, NULL };
         XGetClassHint(dpy, c->win, &ch);
         class    = ch.res_class ? ch.res_class : broken;
-
-        // n - i <= 1 最后两个窗口, i <= 1 第一个窗口才有动画效果 (避免窗口数量太多时动画卡顿)
-        // !strstr(class, "Wine") 表示Wine相关的窗口无动画效果 (Wine动画效果不佳)
-        if (interact == 0 && (n - i <= 1 || i <= 1) && !strstr(class, "Wine")) {
-            int ox = c->x, oy = c->y, ow = c->w, oh = c->h;
-            int nx, ny, nw, nh;
-            int f = resizef;
-            int t = resizet / f;
-            float xs = 0, d = 0;
-            for (int i = 1; i <= f; i++) {
-                d = i * 1.0 / f;
-                xs = i < 0.6 * f ? 1.625 * d : -1.5 * d + 2.5;
-                nx = ox + xs * (x - ox) * d;
-                ny = oy + xs * (y - oy) * d;
-                nw = ow + xs * (w - ow) * d;
-                nh = oh + xs * (h - oh) * d;
-                resizeclient(c, nx, ny, nw, nh);
-                usleep(t);
-            };
-        } else {
-            resizeclient(c, x, y, w, h);
-        }
+        instance = ch.res_name  ? ch.res_name  : broken;
+        resizeclient(c, x, y, w, h);
     }
 }
 
