@@ -17,7 +17,7 @@ static const int resizet                    = 50000;   /* 动画时长 */
 static const unsigned int snap              = 10;      /* 边缘依附宽度 */
 static const unsigned int baralpha          = 0xc0;    /* 状态栏透明度 */
 static const unsigned int borderalpha       = 0xdd;    /* 边框透明度 */
-static const int resizehints                = 1;       /* */
+static const int resizehints                = 1;
 static const char *fonts[]                  = {"Iosevka Nerd Font: style=medium:size=12", "feather:size = 12"};
 
 static const char *colors[][3] = {
@@ -38,11 +38,10 @@ static const Layout layouts[] = {
     {"響",    bstack                 },
     {"冀",    gaplessgrid            },
     {"",     centeredfloatingmaster },
-		{"===",  bstackhoriz             },
-		{"###",  nrowgrid                },
-		{"---",  horizgrid               },
-		{"|M|",  centeredmaster          },
-    {"",     NULL                   },    /* no layout function means floating behavior */
+		{"===",   bstackhoriz            },
+		{"###",   nrowgrid               },
+		{"---",   horizgrid              },
+		{"|M|",   centeredmaster         },
 		{ NULL,   NULL                   },
 };
 
@@ -86,6 +85,7 @@ static const char *mutevol[] = {"/home/allen/scripts/vol-toggle.sh", NULL};
 #define TAGKEYS(KEY, TAG, cmd1, cmd2) \
     { MODKEY,              KEY, view,       {.ui = 1 << TAG, .v = cmd1} }, \
     { MODKEY|ShiftMask,    KEY, tag,        {.ui = 1 << TAG, .v = cmd2} }, \
+    { MODKEY|ControlMask,  KEY, toggleview, {.ui = 1 << TAG} }, \
 
 static const char *scratchpadcmd[] = { "st", "-t", "scratchpad", "-g", "120x40", NULL }; // 临时小窗口的启动命令
 
