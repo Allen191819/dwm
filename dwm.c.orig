@@ -50,7 +50,7 @@
 #define INTERSECT(x,y,w,h,m)    (MAX(0, MIN((x)+(w),(m)->wx+(m)->ww) - MAX((x),(m)->wx)) \
                                * MAX(0, MIN((y)+(h),(m)->wy+(m)->wh) - MAX((y),(m)->wy)))
 #define ISVISIBLE(C)            ((C->mon->isoverview || C->tags & C->mon->tagset[C->mon->seltags]))
-#define HIDDEN(C)               ((getstate(C->win) == IconicState))
+#define HIDDEN(C)               ((C->mon->isoverview ? 0 : getstate(C->win) == IconicState))
 #define LENGTH(X)               (sizeof X / sizeof X[0])
 #define MOUSEMASK               (BUTTONMASK|PointerMotionMask)
 #define WIDTH(X)                ((X)->w + 2 * (X)->bw)
@@ -197,7 +197,6 @@ static void configure(Client *c);
 static void configurenotify(XEvent *e);
 static void configurerequest(XEvent *e);
 static Monitor *createmon(void);
-static void cyclelayout(const Arg *arg);
 static void destroynotify(XEvent *e);
 static void detach(Client *c);
 static void detachstack(Client *c);
@@ -888,23 +887,6 @@ createmon(void)
     return m;
 }
 
-
-void
-cyclelayout(const Arg *arg) {
-	Layout *l;
-	for(l = (Layout *)layouts; l != selmon->lt[selmon->sellt]; l++);
-	if(arg->i > 0) {
-		if(l->symbol && (l + 1)->symbol)
-			setlayout(&((Arg) { .v = (l + 1) }));
-		else
-			setlayout(&((Arg) { .v = layouts }));
-	} else {
-		if(l != layouts && (l - 1)->symbol)
-			setlayout(&((Arg) { .v = (l - 1) }));
-		else
-			setlayout(&((Arg) { .v = &layouts[LENGTH(layouts) - 2] }));
-	}
-}
 
 void
 destroynotify(XEvent *e)
@@ -2347,6 +2329,14 @@ tagmon(const Arg *arg)
 void
 toggleoverview(const Arg *arg)
 {
+//		if(selmon->isoverview == 0 && showsystray == 1){
+//        showsystray = 0;
+//        XUnmapWindow(dpy, systray->win);
+//		}else{
+//        showsystray = 1;
+//		}
+// 		updatesystray();
+// 		updatestatus();
     uint target = selmon->sel ? selmon->sel->tags : selmon->seltags;
     selmon->isoverview ^= 1;
     view(&(Arg){ .ui = target });

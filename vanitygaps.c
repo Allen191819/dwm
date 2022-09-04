@@ -1,8 +1,8 @@
 static const unsigned int gappi = 10; /* horiz inner gap between windows */
-static const unsigned int gappo =
-    10; /* horiz outer gap between windows and screen edge */
-static int smartgaps =
-    0; /* 1 means no outer gap when there is only one window */
+static const unsigned int gappo = 10; /* horiz outer gap between windows and screen edge */
+static int smartgaps = 0; /* 1 means no outer gap when there is only one window */
+static const int overviewgappi              = 24;
+static const int overviewgappo              = 60;
 /* Key binding functions */
 static void defaultgaps(const Arg *arg);
 static void incrgaps(const Arg *arg);
@@ -13,6 +13,7 @@ static void incrovgaps(const Arg *arg);
 static void incrihgaps(const Arg *arg);
 static void incrivgaps(const Arg *arg);
 static void togglegaps(const Arg *arg);
+
 /* Layouts (delete the ones you do not need) */
 static void bstack(Monitor *m);
 static void bstackhoriz(Monitor *m);
@@ -25,6 +26,9 @@ static void grid(Monitor *m);
 static void nrowgrid(Monitor *m);
 static void spiral(Monitor *m);
 static void tile(Monitor *m);
+static void overview(Monitor *m);
+static void newgrid(Monitor *m, uint gappo, uint uappi);
+
 /* Internals */
 static void getgaps(Monitor *m, int *oh, int *ov, int *ih, int *iv,
                     unsigned int *nc);
@@ -157,6 +161,7 @@ void getfacts(Monitor *m, int msize, int ssize, float *mf, float *sf, int *mr,
   *sr = ssize -
         stotal; // the remainder (rest) of pixels after an even stack split
 }
+
 
 /***
  * Layouts
@@ -768,4 +773,77 @@ static void tile(Monitor *m) {
              0);
       sy += HEIGHT(c) + ih;
     }
+}
+
+void
+overview(Monitor *m)
+{
+    newgrid(m, overviewgappo, overviewgappi);
+}
+
+void
+newgrid(Monitor *m, uint gappo, uint gappi)
+{
+    unsigned int i, n;
+    unsigned int cx, cy, cw, ch;
+    unsigned int dx;
+    unsigned int cols, rows, overcols;
+    Client *c;
+
+    for (n = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), n++);
+    if (n == 0) return;
+    if (n == 1) {
+        c = nexttiled(m->clients);
+        cw = (m->ww - 2 * gappo) * 0.6;
+        ch = (m->wh - 2 * gappo) * 0.6;
+        resize(c,
+               m->mx + (m->mw - cw) / 2 + gappo,
+               m->my + (m->mh - ch) / 2 + gappo,
+               cw - 2 * c->bw,
+               ch - 2 * c->bw,
+               0);
+        return;
+    }
+    if (n == 2) {
+        c = nexttiled(m->clients);
+        cw = (m->ww - 2 * gappo - gappi) / 2;
+        ch = (m->wh - 2 * gappo) * 0.6;
+        resize(c,
+               m->mx + gappo,
+               m->my + (m->mh - ch) / 2 + gappo,
+               cw - 2 * c->bw,
+               ch - 2 * c->bw,
+               0);
+        resize(nexttiled(c->next),
+               m->mx + cw + gappo + gappi,
+               m->my + (m->mh - ch) / 2 + gappo,
+               cw - 2 * c->bw,
+               ch - 2 * c->bw,
+               0);
+        return;
+    }
+
+    for (cols = 0; cols <= n / 2; cols++)
+        if (cols * cols >= n)
+            break;
+    rows = (cols && (cols - 1) * cols >= n) ? cols - 1 : cols;
+	ch = (m->wh - 2 * gappo - (rows - 1) * gappi) / rows;
+	cw = (m->ww - 2 * gappo - (cols - 1) * gappi) / cols;
+
+    overcols = n % cols;
+    if (overcols)
+        dx = (m->ww - overcols * cw - (overcols - 1) * gappi) / 2 - gappo;
+	for(i = 0, c = nexttiled(m->clients); c; c = nexttiled(c->next), i++) {
+        cx = m->wx + (i % cols) * (cw + gappi);
+        cy = m->wy + (i / cols) * (ch + gappi);
+        if (overcols && i >= n - overcols) {
+            cx += dx;
+        }
+        resize(c,
+               cx + gappo,
+               cy + gappo,
+               cw - 2 * c->bw,
+               ch - 2 * c->bw,
+               0);
+	}
 }

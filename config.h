@@ -3,7 +3,7 @@
 #include <X11/XF86keysym.h>
 
 static int showsystray                      = 1;       /* 是否显示托盘栏 */
-static const int newismaster                = 1;       /* 定义新窗口在栈顶还是栈底 */
+static const int newismaster                = 0;       /* 定义新窗口在栈顶还是栈底 */
 static const unsigned int borderpx          = 1;       /* 窗口边框大小 */
 static const unsigned int systraypinning    = 1;       /* 托盘跟随的显示器 0代表不指定显示器 */
 static const int systraypinningfailfirst    = 1;       /* 托盘跟随的显示器 0代表上个聚焦的显示器 1代表当前聚焦的显示器 */
@@ -29,12 +29,29 @@ static const unsigned int alphas[][3] = {
     [SchemeNorm] = {OPAQUE, baralpha, borderalpha},
     [SchemeSel] = {OPAQUE, baralpha, borderalpha}};
 
+/* 自定义布局 */
+static const Layout layouts[] = {
+    {"﬿",     tile                   },   /* 主次栈 */
+    {"",     grid                   },   /* 网格   */
+    {"侀",    dwindle                },
+    {"",     deck                   },
+    {"響",    bstack                 },
+    {"冀",    gaplessgrid            },
+    {"",     centeredfloatingmaster },
+		{"===",  bstackhoriz             },
+		{"###",  nrowgrid                },
+		{"---",  horizgrid               },
+		{"|M|",  centeredmaster          },
+    {"",     NULL                   },    /* no layout function means floating behavior */
+		{ NULL,   NULL                   },
+};
+
 /* 自定义tag名称 */
 /* 自定义特定实例的显示状态 */
-//            ﮸ 
-static const char *tags[] = {"﮸", "", "", "",   "", "", "", "", "", "", "", "", "ﬄ", "﬐", "", "", "", "", "切"};
-// static const char *tags[] = { "﮸ ", "﮸ ₂", "﮸ ₃", "﮸ ₄", "﮸ ₅", "﮸ ₆", "﮸ ₇",
-// "﮸ ₈", "", "", "", "", "ﬄ", "﬐", "" };
+static const char *tags[] = {"﮸", "", "", "", "", "", "", "", "", "", "", "", "ﬄ", "﬐", "", "", "", "", "切"};
+static const char *overviewtag = "OVERVIEW";
+static const Layout overviewlayout = {"",overview};
+
 static const Rule rules[] = {
     /* class                instance         title       tags mask     isfloating  isfullscreen  monitor */
     {"netease-cloud-music", NULL,            NULL,       1 << 10,      1,          0,            -1},
@@ -49,24 +66,14 @@ static const Rule rules[] = {
     {"icalingua",           NULL,            NULL,       0,            1,          0,            -1},
     {"Gpick",               NULL,            NULL,       0,            1,          0,            -1},
     {"Telegram",            NULL,            NULL,       1 << 18,      1,          0,            -1},
-    {"Thunderbird",         NULL,            NULL,       0,            0,          0,            -1},
-    {"feishu",              NULL,            NULL,       1 << 17,      1,          0,            -1},
-    {"listen1",             NULL,            NULL,       1 << 10,      0,          0,            -1},
-    {"pcmanfm",             NULL,            NULL,       1 << 11,      0,          0,            -1},
+    {"Thunderbird",         NULL,            NULL,       0,            1,          0,            -1},
+    {"listen1",             NULL,            NULL,       1 << 10,      1,          0,            -1},
+    {"pcmanfm",             NULL,            NULL,       1 << 11,      1,          0,            -1},
+    {"QQ.exe",              NULL,            NULL,       1 << 12,      1,          0,            -1},
+    {"TIM.exe",             NULL,            NULL,       1 << 12,      1,          0,            -1},
     {"icalingua",           NULL,            NULL,       1 << 14,      0,          0,            -1},
-    {"dbeaver",             NULL,            NULL,       1 << 16,      0,          0,            -1},
-};
-
-/* 自定义布局 */
-static const Layout layouts[] = {
-    {"﬿",  tile                   },   /* 主次栈 */
-    {"",  grid                   },   /* 网格   */
-    {"侀", dwindle                },
-    {"",  deck                   },
-    {"響", bstack                 },
-    {"冀", gaplessgrid            },
-    {"",  centeredfloatingmaster },
-    {"",  NULL                   },    /* no layout function means floating behavior */
+    {"DBeaver",             NULL,            NULL,       1 << 16,      0,          0,            -1},
+    {"feishu",              NULL,            NULL,       1 << 17,      1,          0,            -1},
 };
 
 // Commands
@@ -86,6 +93,7 @@ static Key keys[] = {
     /* modifier            key                      function           argument */
     {MODKEY,               XK_minus,                togglescratch,     {.v = scratchpadcmd}}, /* super -            |  打开临时小窗 st */
     {MODKEY,               XK_equal,                togglesystray,     {0}},                  /* super +            |  切换 托盘栏显示状态 */
+    {MODKEY| ShiftMask,    XK_Tab,                  toggleoverview,    {0}},                  /* super +            |  切换 overview */
 
     {MODKEY,               XK_Tab,                  focusstack,        {0}},                  /* super tab          |  本tag内切换聚焦窗口 */
     {MODKEY,               XK_Up,                   focusstack,        {.i = -1}},            /* super up           |  本tag内切换聚焦窗口 */
@@ -104,8 +112,6 @@ static Key keys[] = {
 
     {MODKEY,               XK_comma,                setmfact,          {.f = -0.05}},         /* super ,            |  缩小主工作区 */
     {MODKEY,               XK_period,               setmfact,          {.f = +0.05}},         /* super .            |  放大主工作区 */
-    {MODKEY | ControlMask, XK_comma,                setmfact,          {.f = -0.05}},         /* super ctrl ,       |  缩小主工作区 */
-    {MODKEY | ControlMask, XK_period,               setmfact,          {.f = +0.05}},         /* super ctrl .       |  放大主工作区 */
 
     {MODKEY,               XK_h,                    hidewin,           {0}},                  /* super h            |  隐藏 窗口 */
     {MODKEY | ShiftMask,   XK_h,                    restorewin,        {0}},                  /* super shift h      |  取消隐藏 窗口 */
@@ -134,18 +140,12 @@ static Key keys[] = {
     {MODKEY | ControlMask, XK_space,                defaultgaps,       {0}},
 
     {MODKEY | ControlMask, XK_0,                    setlayout,         {.v = &layouts[0]}},
-    {MODKEY | ShiftMask,   XK_space,                setlayout,         {.v = &layouts[1]}},            /* super shift space  |  主次栈模式 */
-    {MODKEY,               XK_r,                    setlayout,         {.v = &layouts[2]}},
-    {MODKEY | ShiftMask,   XK_r,                    setlayout,         {.v = &layouts[3]}},
-    {MODKEY | ControlMask, XK_r,                    setlayout,         {.v = &layouts[4]}},
-    {MODKEY,               XK_m,                    setlayout,         {.v = &layouts[5]}},
-    {MODKEY | ShiftMask,   XK_m,                    setlayout,         {.v = &layouts[6]}},
-    {MODKEY | ControlMask, XK_m,                    setlayout,         {.v = &layouts[7]}},
-
+    {MODKEY | ShiftMask,   XK_space,                setlayout,         {.v = &layouts[1]}},   /* super shift space  |  主次栈模式 */
+    {MODKEY,               XK_r,                    cyclelayout,       {.i = -1}},            /* super r            /  循环布局 */
+    {MODKEY | ShiftMask,   XK_r,                    cyclelayout,       {.i = +1}},
     {0,                    XF86XK_AudioLowerVolume, spawn,             {.v = downvol}},
     {0,                    XF86XK_AudioMute,        spawn,             {.v = mutevol}},
     {0,                    XF86XK_AudioRaiseVolume, spawn,             {.v = upvol}},
-
     /* spawn + SHCMD 执行对应命令 */
     {0, XK_Print,                                   spawn,             SHCMD("~/scripts/app-starter.sh flameshot")},
     {MODKEY, XK_d,                                  spawn,             SHCMD("~/scripts/app-starter.sh rofi")},
@@ -159,11 +159,9 @@ static Key keys[] = {
     {MODKEY | ControlMask, XK_Return,               spawn,             SHCMD("~/scripts/app-starter.sh ast")},
     {MODKEY | ShiftMask, XK_y,                      spawn,             SHCMD("~/scripts/app-starter.sh clipboard")},
     {MODKEY | ControlMask, XK_y,                    spawn,             SHCMD("~/scripts/app-starter.sh notebook")},
-
     {Mod1Mask | ControlMask, XK_x,                  spawn,             SHCMD("~/scripts/app-starter.sh warpd-h")},
     {Mod1Mask | ControlMask, XK_c,                  spawn,             SHCMD("~/scripts/app-starter.sh warpd-n")},
     {Mod1Mask | ControlMask, XK_g,                  spawn,             SHCMD("~/scripts/app-starter.sh warpd-g")},
-
     /* super key : 跳转到对应tag */
     /* super shift key : 将聚焦窗口移动到对应tag */
     /* super ctrl  key : 切换同时显示对应tag */
