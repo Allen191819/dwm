@@ -67,9 +67,10 @@ static const Rule rules[] = {
     {"Telegram",            NULL,            NULL,       1 << 18,      1,          0,            -1},
     {"Thunderbird",         NULL,            NULL,       0,            1,          0,            -1},
     {"listen1",             NULL,            NULL,       1 << 10,      1,          0,            -1},
+    {"Vncviewer",           NULL,            NULL,       1 << 4,       1,          0,            -1},
     {"pcmanfm",             NULL,            NULL,       1 << 11,      1,          0,            -1},
-    {"QQ.exe",              NULL,            NULL,       1 << 12,      1,          0,            -1},
-    {"TIM.exe",             NULL,            NULL,       1 << 12,      1,          0,            -1},
+    {"qq.exe",              NULL,            NULL,       1 << 12,      1,          0,            -1},
+    {"tim.exe",             NULL,            NULL,       1 << 12,      1,          0,            -1},
     {"icalingua",           NULL,            NULL,       1 << 14,      0,          0,            -1},
     {"DBeaver",             NULL,            NULL,       1 << 16,      0,          0,            -1},
     {"feishu",              NULL,            NULL,       1 << 17,      1,          0,            -1},
@@ -159,6 +160,7 @@ static Key keys[] = {
     {MODKEY | ControlMask, XK_Return,               spawn,             SHCMD("~/scripts/app-starter.sh ast")},
     {MODKEY | ShiftMask, XK_y,                      spawn,             SHCMD("~/scripts/app-starter.sh clipboard")},
     {MODKEY | ControlMask, XK_y,                    spawn,             SHCMD("~/scripts/app-starter.sh notebook")},
+    {MODKEY | ControlMask, XK_r,										spawn,             SHCMD("~/scripts/app-starter.sh wallpaper")},
     {Mod1Mask | ControlMask, XK_x,                  spawn,             SHCMD("~/scripts/app-starter.sh warpd-h")},
     {Mod1Mask | ControlMask, XK_c,                  spawn,             SHCMD("~/scripts/app-starter.sh warpd-n")},
     {Mod1Mask | ControlMask, XK_g,                  spawn,             SHCMD("~/scripts/app-starter.sh warpd-g")},
@@ -171,7 +173,7 @@ static Key keys[] = {
 			TAGKEYS(XK_2, 1, 0,                                      0)
 			TAGKEYS(XK_3, 2, 0,                                      0)
 			TAGKEYS(XK_4, 3, 0,                                      0)
-			TAGKEYS(XK_5, 4, 0,                                      0)
+			TAGKEYS(XK_5, 4, "~/scripts/app-starter.sh vncviewer",   0)
 			TAGKEYS(XK_6, 5, "~/scripts/app-starter.sh pcmanfm",     0)
 			TAGKEYS(XK_7, 6, "~/scripts/app-starter.sh pycharm",     0)
 			TAGKEYS(XK_8, 7, "~/scripts/app-starter.sh idea",        0)
