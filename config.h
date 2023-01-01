@@ -47,7 +47,7 @@ static const Layout layouts[] = {
 
 /* 自定义tag名称 */
 /* 自定义特定实例的显示状态 */
-static const char *tags[] = {"﮸", "", "", "", "", "", "", "", "", "", "", "", "ﬄ", "﬐", "", "", "", "", "切"};
+static const char *tags[] = {"﮸", "", "", "", "", "", "", "", "", "", "", "", "ﬄ", "﬐", "", "", "", "切"};
 static const char *overviewtag = "OVERVIEW";
 static const Layout overviewlayout = {"",overview};
 
@@ -55,7 +55,7 @@ static const Rule rules[] = {
     /* class                instance         title       tags mask     isfloating  isfullscreen  monitor */
     {"netease-cloud-music", NULL,            NULL,       1 << 10,      1,          0,            -1},
     {"Postman",             NULL,            NULL,       1 << 11,      0,          0,            -1},
-    {"weixin",              NULL,            NULL,       1 << 13,      1,          0,            -1},
+    {"electronic-wechat",   NULL,            NULL,       1 << 13,      1,          0,            -1},
     {NULL,                  NULL,            "broken",   0,            1,          0,            -1},
     {NULL,                  NULL,            "图片查看", 0,            1,          0,            -1},
     {NULL,                  NULL,            "图片预览", 0,            1,          0,            -1},
@@ -64,16 +64,16 @@ static const Rule rules[] = {
     {"listen1",             NULL,            NULL,       0,            1,          0,            -1},
     {"icalingua",           NULL,            NULL,       0,            1,          0,            -1},
     {"Gpick",               NULL,            NULL,       0,            1,          0,            -1},
-    {"Telegram",            NULL,            NULL,       1 << 18,      1,          0,            -1},
+    {"Telegram",            NULL,            NULL,       1 << 17,      1,          0,            -1},
     {"Thunderbird",         NULL,            NULL,       0,            1,          0,            -1},
     {"listen1",             NULL,            NULL,       1 << 10,      1,          0,            -1},
     {"Vncviewer",           NULL,            NULL,       1 << 4,       1,          0,            -1},
     {"pcmanfm",             NULL,            NULL,       1 << 11,      1,          0,            -1},
     {"qq.exe",              NULL,            NULL,       1 << 12,      1,          0,            -1},
     {"tim.exe",             NULL,            NULL,       1 << 12,      1,          0,            -1},
-    {"icalingua",           NULL,            NULL,       1 << 14,      0,          0,            -1},
-    {"DBeaver",             NULL,            NULL,       1 << 16,      0,          0,            -1},
-    {"feishu",              NULL,            NULL,       1 << 17,      1,          0,            -1},
+    {"icalingua",           NULL,            NULL,       1 << 12,      0,          0,            -1},
+    {"DBeaver",             NULL,            NULL,       1 << 15,      0,          0,            -1},
+    {"feishu",              NULL,            NULL,       1 << 16,      1,          0,            -1},
 };
 
 // Commands
@@ -181,13 +181,12 @@ static Key keys[] = {
 			TAGKEYS(XK_c, 9, "~/scripts/app-starter.sh browser",     0)
 			TAGKEYS(XK_p, 10, "~/scripts/app-starter.sh music",      0)
 			TAGKEYS(XK_n, 11, "~/scripts/app-starter.sh postman",    0)
-			TAGKEYS(XK_u, 12, "~/scripts/app-starter.sh tim",        0)
+			TAGKEYS(XK_z, 12, "~/scripts/app-starter.sh qq",        0)
 			TAGKEYS(XK_w, 13, "~/scripts/app-starter.sh wechat",     0)
-			TAGKEYS(XK_z, 14, "~/scripts/app-starter.sh qq",         0)
-			TAGKEYS(XK_o, 15, "~/scripts/app-starter.sh virt",       0)
-			TAGKEYS(XK_v, 16, "~/scripts/app-starter.sh db",         0)
-			TAGKEYS(XK_g, 17, "~/scripts/app-starter.sh feishu",     0)
-			TAGKEYS(XK_a, 18, "~/scripts/app-starter.sh telegram",   0)};
+			TAGKEYS(XK_o, 14, "~/scripts/app-starter.sh virt",       0)
+			TAGKEYS(XK_v, 15, "~/scripts/app-starter.sh db",         0)
+			TAGKEYS(XK_g, 16, "~/scripts/app-starter.sh feishu",     0)
+			TAGKEYS(XK_a, 17, "~/scripts/app-starter.sh telegram",   0)};
 
 static Button buttons[] = {
     /* click               event mask               button            function argument  */
