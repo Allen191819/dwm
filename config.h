@@ -31,23 +31,23 @@ static const unsigned int alphas[][3] = {
 
 /* 自定义布局 */
 static const Layout layouts[] = {
-    {"﬿",     tile                   },   /* 主次栈 */
-    {"",     grid                   },   /* 网格   */
-    {"侀",    dwindle                },
+    {"󰙀",     tile                   },   /* 主次栈 */
+    {"󰀻",     grid                   },   /* 网格   */
+    {"󰕴",    dwindle                },
     {"",     deck                   },
-    {"響",    bstack                 },
-    {"冀",    gaplessgrid            },
-    {"",     centeredfloatingmaster },
-		{"===",   bstackhoriz            },
-		{"###",   nrowgrid               },
-		{"---",   horizgrid              },
-		{"|M|",   centeredmaster         },
-		{ NULL,   NULL                   },
+    {"󰹫",    bstack                 },
+    {"󰕭",    gaplessgrid            },
+    {"󰅣",     centeredfloatingmaster },
+	{"===",   bstackhoriz            },
+	{"###",   nrowgrid               },
+	{"---",   horizgrid              },
+	{"|M|",   centeredmaster         },
+	{ NULL,   NULL                   },
 };
 
 /* 自定义tag名称 */
 /* 自定义特定实例的显示状态 */
-static const char *tags[] = {"﮸", "", "", "", "", "", "", "", "", "", "", "", "ﬄ", "﬐", "", "", "", "切"};
+static const char *tags[] = {"", "󰎧", "󰎪", "󰎭", "", "", "", "", "󰎼", "", "󰎆", "", "󰘅", "󰘑", "", "", "", ""};
 static const char *overviewtag = "OVERVIEW";
 static const Layout overviewlayout = {"",overview};
 
