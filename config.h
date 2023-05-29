@@ -53,7 +53,7 @@ static const Layout overviewlayout = {"",overview};
 
 static const Rule rules[] = {
     /* class                instance         title       tags mask     isfloating  isfullscreen  monitor */
-    {"netease-cloud-music", NULL,            NULL,       1 << 10,      1,          0,            -1},
+    {"yesplaymusic",        NULL,            NULL,       1 << 10,      1,          0,            -1},
     {"Postman",             NULL,            NULL,       1 << 11,      0,          0,            -1},
     {"electronic-wechat",   NULL,            NULL,       1 << 13,      1,          0,            -1},
     {NULL,                  NULL,            "broken",   0,            1,          0,            -1},
